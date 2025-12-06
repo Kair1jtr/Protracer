@@ -5,16 +5,35 @@ import processing.core.PConstants
 import processing.core.PImage
 import kotlin.math.sqrt
 
-import io.github.kair1jtr.Protracer.Vector3;
-
 class Trace(var p: PApplet) {
     fun drawImage(): PImage {
         val image = p.createImage(p.width, p.height, PConstants.RGB)
         image.loadPixels()
+
+        val aspect_ratio = (p.width.toDouble()/p.height.toDouble())
+
+        val viewport_height = 2.0
+        val viewport_width = aspect_ratio * viewport_height
+        val focal_length = 1.0
+
+        val origin = Point3(0.0,0.0,0.0)
+        val horizontal = Vector3(viewport_width,0.0,0.0)
+        val vertical = Vector3(0.0,viewport_height,0.0)
+        val lower_left_corner = origin - horizontal/2.0 - vertical/2.0 - Vector3(0.0,0.0,focal_length)
+
         for (y in 0 until image.height) {
-            val flippedY = image.height - 1 - y  // 上下反転
             for (x in 0 until image.width) {
-                image.pixels[y * image.width + x] = calcPixelColor(x, flippedY)
+                val u : Double = x.toDouble() / (p.width-1).toDouble();
+                val v : Double = y.toDouble() / (p.height-1).toDouble();
+
+                var r : Ray = Ray(origin,lower_left_corner + horizontal*u + vertical*v - origin)
+                val c = ray_color(r)
+                val red = (c.x * 255).toInt().coerceIn(0, 255)
+                val green = (c.y * 255).toInt().coerceIn(0, 255)
+                val blue = (c.z * 255).toInt().coerceIn(0, 255)
+
+                p.set(x,p.height-1-y,p.color(red,green,blue))
+                //image.pixels[y * image.width + x] = p.color(red, green, blue)
             }
         }
         image.updatePixels()
@@ -22,37 +41,27 @@ class Trace(var p: PApplet) {
         return image
     }
 
-    fun calcPrimaryRay(x: Int, y: Int): Vector3 {
-        val imagePlane: Double = p.height.toDouble()
-
-        val dx: Double = x + 0.5 - p.width / 2
-        val dy: Double = -(y + 0.5 - p.height / 2)
-        val dz = -imagePlane
-
-        return Vector3(dx, dy, dz).normalize()
-    }
-
-    fun calcPixelColor(x: Int, y: Int): Int {
-        val eye: Vector3 = Vector3(0.0, 0.0, 5.0) // 視点の座標
-        val sphereCenter: Vector3 = Vector3(0.0, 0.0, 0.0) // 球の中心座標
-        val sphereRadius: Float = 1f
-
-        val rayDir: Vector3 = calcPrimaryRay(x, y)
-
-        if (intersectRaySphere(eye, rayDir, sphereCenter, sphereRadius)) {
-            return p.color(255, 255, 255) // 白
+    fun hit_sphere(center : Point3 , radius : Double, r: Ray): Double {
+        val oc = r.orig - center
+        val a = Utils.dot(r.dir,r.dir)
+        val b = Utils.dot(oc,r.dir)*2.0
+        val c = Utils.dot(oc,oc) - radius*radius
+        val discriminant = b*b - 4*a*c
+        if (discriminant < 0) {
+            return -1.0
         } else {
-            return p.color(0, 0, 0) // 黒
+            return (-b - sqrt(discriminant)) / (a*2.0)
         }
     }
-    fun intersectRaySphere(
-        rayOrigin: Vector3, rayDir: Vector3,
-        sphereCenter: Vector3, sphereRadius: Float
-    ): Boolean {
-        val v: Vector3 = rayOrigin - sphereCenter
-        val b: Double = dot(rayDir,v)
-        val c: Double = dot(v,v) - sqrt(sphereRadius.toFloat())
-        val d = b * b - c
-        return d >= 0
+
+    fun ray_color(r : Ray) : Color {
+        var t = hit_sphere(Point3(0.0,0.0,-1.0),0.5,r)
+        if (t > 0.0) {
+            val N = (r.at(t) - Vector3(0.0,0.0,-1.0))
+            return Color(N.x +1,N.y + 1,N.z + 1)*0.5
+        }
+        val unit_direction : Vector3 = r.dir.normalize()
+        t = (unit_direction.y+1.0)*0.5
+        return Color(1.0,1.0,1.0)*(1.0-t) + Color(0.5,0.7,1.0)*t
     }
 }
