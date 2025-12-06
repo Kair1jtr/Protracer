@@ -8,6 +8,7 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     id("java")
+    kotlin("jvm")
 }
 
 // Sets the Java version to use for compiling your library.
@@ -42,13 +43,13 @@ version = if (project.hasProperty("githubReleaseTag")) {
 // Such as:
 // <libName>.jar will be the name of your build jar
 // <libName>.zip will be the name of your release file
-val libName = "myLibrary"
+val libName = "Protracer"
 
 // The group ID of your library, which uniquely identifies your project.
 // It's often written in reverse domain name notation.
 // For example, if your website is "myDomain.com", your group ID would be "com.myDomain".
 // Replace "com.myDomain" with your own domain or organization name.
-group = "com.myDomain"
+group = "io.github.kairi.jtr"
 
 // The location of your sketchbook folder. The sketchbook folder holds your installed
 // libraries, tools, and modes. It is needed if you:
@@ -63,7 +64,7 @@ var sketchbookLocation = ""
 val userHome = System.getProperty("user.home")
 val currentOS = OperatingSystem.current()
 if(currentOS.isMacOsX) {
-    sketchbookLocation = if (File("$userHome/Documents/Processing/sketchbook").isDirectory) {
+    sketchbookLocation = if (File("C:/Users/f1722/Processing").isDirectory) {
         "$userHome/Documents/Processing/sketchbook"
     } else {
         "$userHome/Documents/Processing"
@@ -74,13 +75,13 @@ if(currentOS.isMacOsX) {
     } else {
         "$userHome/Documents"
     }
-    sketchbookLocation = if (File(docsFolder,"Processing/sketchbook").isDirectory) {
-        "$docsFolder/Processing/sketchbook"
+    sketchbookLocation = if (File("C:/Users/f1722","Processing").isDirectory) {
+        "C:/Users/f1722/Processing"
     } else {
-        "$docsFolder/Processing"
+        "C:/Users/f1722/Processing"
     }
 } else {
-    sketchbookLocation = "$userHome/sketchbook"
+    sketchbookLocation = "$userHome/"
 }
 // If you need to set the sketchbook location manually, uncomment out the following
 // line and set sketchbookLocation to the correct location
@@ -104,12 +105,17 @@ dependencies {
     // For example uncomment the following line to declare commons-math3 as a dependency.
     // implementation(group = "org.apache.commons", name = "commons-math3", version = "3.6.1")
 
+    // https://mvnrepository.com/artifact/org.jocl/jocl
+    implementation("org.jocl:jocl:2.0.5")
+    //implementation(group = "org.processing", name = "core", version = "4.3.1")
+
     // To add a dependency on a Processing library that is installed locally,
     // uncomment the line below, and replace <library folder> with the location of that library
     // compileOnly(fileTree("$sketchbookLocation/libraries/<library folder>/library"))
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.test {
@@ -280,3 +286,4 @@ tasks.register("deployToProcessingSketchbook") {
         }
     }
 }
+
