@@ -69,17 +69,8 @@ if(currentOS.isMacOsX) {
     } else {
         "$userHome/Documents/Processing"
     }
-} else if(currentOS.isWindows) {
-    val docsFolder = if (File("$userHome/My Documents").isDirectory) {
-        "$userHome/My Documents"
-    } else {
-        "$userHome/Documents"
-    }
-    sketchbookLocation = if (File("C:/Users/f1722","Processing").isDirectory) {
-        "C:/Users/f1722/Processing"
-    } else {
-        "C:/Users/f1722/Processing"
-    }
+} else if(true) {
+    sketchbookLocation = "/home/mint/sketchbook/"
 } else {
     sketchbookLocation = "$userHome/"
 }
