@@ -24,10 +24,3 @@ copyright: MIT Licence.
 plugins:
   - search
   - offline
-
-nav:
-  - Home: index.md
-  - Get Started: getting-started.md
-  - Develop: develop.md
-  - Release: release.md
-  - Troubleshooting: troubleshooting.md

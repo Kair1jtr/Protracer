@@ -11,4 +11,6 @@ object Utils {
     )
 
     fun unitVector(v: Vector3): Vector3 = v / v.length()
+
+    fun degrees_to_radians(degrees: Double) : Double = degrees * pi / 180
 }

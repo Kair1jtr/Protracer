@@ -1,5 +1,7 @@
 package io.github.kair1jtr.Protracer
 
+import kotlin.time.measureTime
+
 class Vector3(val x: Double, val y: Double, val z: Double) {
 
     public fun length_squared(): Double = x * x + y * y + z * z
@@ -20,6 +22,7 @@ class Vector3(val x: Double, val y: Double, val z: Double) {
     operator fun times(scalar: Double): Vector3 = Vector3(x * scalar, y * scalar, z * scalar)
     operator fun div(scalar: Double): Vector3 = Vector3(x / scalar, y / scalar, z / scalar)
 
+    operator fun unaryMinus() : Vector3 = Vector3(-x,-y,-z)
 }
 
 typealias Point3 = Vector3

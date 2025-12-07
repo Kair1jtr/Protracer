@@ -1,5 +1,6 @@
-package io.github.kair1jtr.Protracer;
+package io.github.kair1jtr.Protracer.raytracer;
 
+import io.github.kair1jtr.Protracer.Vector3;
 import org.jocl.*;
 
 import static org.jocl.CL.*;
