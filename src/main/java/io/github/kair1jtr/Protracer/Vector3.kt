@@ -10,14 +10,6 @@ class Vector3(val x: Double, val y: Double, val z: Double) {
 
     fun normalize(): Vector3 = this * (1.0 / length())
 
-    fun random_in_unit_sphere() : Vector3 {
-        while (true) {
-            var p = Utils.random(-1.0,1.0)
-            if (p.length_squared() >= 1) continue
-            return p
-        }
-    }
-
     //ベクトル量とベクトル量での計算
     operator fun plus(other: Vector3): Vector3 = Vector3(x + other.x, y + other.y, z + other.z)
     operator fun minus(other: Vector3): Vector3 = Vector3(x - other.x, y - other.y, z - other.z)

@@ -17,7 +17,8 @@ class hittable_list() : Hittable() {
             p = Vector3(0.0,0.0,0.0),
             normal = Vector3(0.0,0.0,0.0),
             j=false,
-            front_face = false
+            front_face = false,
+            mat_ptr = lambertial(Color(0.0,0.0,0.0))
         )
 
 

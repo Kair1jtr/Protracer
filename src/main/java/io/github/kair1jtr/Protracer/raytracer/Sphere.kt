@@ -5,7 +5,7 @@ import kotlin.math.sqrt
 import io.github.kair1jtr.Protracer.raytracer.*
 
 
-class Sphere(val center : Point3,val radius: Double) : Hittable(){
+class Sphere(val center : Point3,val radius: Double,val mat_ptr: material) : Hittable(){
 
     override fun hit(r: Ray, t_min: Double, t_max: Double): hit_record {
         val oc = r.orig - center
@@ -25,7 +25,8 @@ class Sphere(val center : Point3,val radius: Double) : Hittable(){
                     p = r.at(temp),
                     normal = (r.at(temp)-center)/radius,
                     j = true,
-                    front_face = false
+                    front_face = false,
+                    mat_ptr = mat_ptr
                 )
 
                 rec.set_face_normal(r,outward_normal)
@@ -40,7 +41,8 @@ class Sphere(val center : Point3,val radius: Double) : Hittable(){
                     p = r.at(temp),
                     normal = (r.at(temp)-center)/radius,
                     j = true,
-                    front_face = false
+                    front_face = false,
+                    mat_ptr = mat_ptr
                 )
 
                 rec.set_face_normal(r,outward_normal)
@@ -53,7 +55,8 @@ class Sphere(val center : Point3,val radius: Double) : Hittable(){
             p = r.at(0.0),
             normal = r.at(0.0),
             j=false,
-            front_face = false
+            front_face = false,
+            mat_ptr = mat_ptr
         )
     }
 }

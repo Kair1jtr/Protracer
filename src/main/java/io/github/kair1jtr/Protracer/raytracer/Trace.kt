@@ -21,6 +21,7 @@ class Trace(var p: PApplet) {
         image.loadPixels()
 
         val samples_per_pixel : Int = 10
+        val max_depth = 10
 
         var world : hittable_list = hittable_list()
         world.add(Sphere(Point3(0.0,0.0,-1.0),0.5))
@@ -33,11 +34,11 @@ class Trace(var p: PApplet) {
                 var pixel_color : Color = Color(0.0,0.0,0.0)
 
                 for (s in 0 until samples_per_pixel) {
-                    val u : Double = (x.toDouble() + Utils.randomDouble()) / (p.width-1).toDouble();
-                    val v : Double = (y.toDouble() + Utils.randomDouble()) / (p.height-1).toDouble();
+                    val u : Double = (x.toDouble() + Utils.random_double()) / (p.width-1).toDouble();
+                    val v : Double = (y.toDouble() + Utils.random_double()) / (p.height-1).toDouble();
 
                     var r = cam.get_ray(u,v)
-                    pixel_color += ray_color(r,world)
+                    pixel_color += ray_color(r,world,max_depth)
                 }
                 val c = write_color(pixel_color,samples_per_pixel)
 
@@ -54,19 +55,6 @@ class Trace(var p: PApplet) {
         return image
     }
 
-    /*fun hit_sphere(center : Point3, radius : Double, r: Ray): Double {
-        val oc = r.orig - center
-        val a = r.dir.length_squared()
-        val half_b = Utils.dot(oc,r.dir)
-        val c = oc.length_squared() - radius*radius
-        val discriminant = half_b*half_b - a*c
-        if (discriminant < 0) {
-            return -1.0
-        } else {
-            return (-half_b - sqrt(discriminant)) / a
-        }
-    }*/
-
     fun write_color(pixel_color : Color,samples_per_pixel : Int) : Color {
         var r = pixel_color.x
         var g = pixel_color.y
@@ -81,12 +69,15 @@ class Trace(var p: PApplet) {
         return Color(r,g,b)
     }
 
-    fun ray_color(r : Ray, world: hittable_list) : Color {
-        var rec : hit_record = world.hit(r,0.0, infinity)
+    fun ray_color(r : Ray, world: hittable_list,depth : Int) : Color {
+        var rec : hit_record = world.hit(r,0.001, infinity)
+        if (depth <= 0) return Color(0.0,0.0,0.0)
         if (rec.j) {
-            return (rec.normal + Color(1.0,1.0,1.0))*0.5
-        }
+            if (rec.mat_ptr.scatter((r,rec)))
 
+            var  target = rec.p + Utils.random_in_hemisphere(rec.normal)
+            return ray_color(Ray(rec.p,target - rec.p),world,depth -1)*0.5
+        }
         val unit_direction : Vector3 = r.dir.normalize()
         val t = (unit_direction.y+1.0)*0.5
         return Color(1.0, 1.0, 1.0) *(1.0-t) + Color(0.5, 0.7, 1.0) *t

@@ -8,6 +8,7 @@ import io.github.kair1jtr.Protracer.Vector3
 data class hit_record(
     var p: Point3,
     var normal : Vector3,
+    var mat_ptr : material,
     var t : Double,
     var j : Boolean,
     var front_face : Boolean
