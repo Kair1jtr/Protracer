@@ -1,6 +1,10 @@
 package io.github.kair1jtr.Protracer
 
+import kotlin.random.Random
+
 object Utils {
+    private val random = Random
+
     fun dot(v1: Vector3, v2: Vector3): Double =
         v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
 
@@ -13,4 +17,12 @@ object Utils {
     fun unitVector(v: Vector3): Vector3 = v / v.length()
 
     fun degrees_to_radians(degrees: Double) : Double = degrees * pi / 180
+
+    fun randomDouble(): Double = random.nextDouble()
+
+    fun randomDouble(min: Double, max: Double): Double = min + (max - min) * random.nextDouble()
+
+    fun random() : Vector3 = Vector3(randomDouble(),randomDouble(),randomDouble())
+
+    fun random(min : Double,max : Double) : Vector3 = Vector3(randomDouble(min,max),randomDouble(min,max),randomDouble(min,max))
 }

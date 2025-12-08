@@ -12,6 +12,7 @@ data class hit_record(
     var j : Boolean,
     var front_face : Boolean
 ) {
+    //物体の内側から発生したレイの場合に法線を内向きにする
     fun set_face_normal(r: Ray, outward_normal: Vector3) {
         front_face = Utils.dot(r.dir , outward_normal) < 0
         normal = if (front_face) {
@@ -19,12 +20,5 @@ data class hit_record(
         }else {
             -outward_normal
         }
-    }
-    fun set_none() {
-        t = 0.0
-        p = Vector3(0.0,0.0,0.0)
-        normal = Vector3(0.0,0.0,0.0)
-        j=false
-        front_face = false
     }
 }

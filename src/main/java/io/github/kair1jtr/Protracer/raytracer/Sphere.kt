@@ -16,8 +16,9 @@ class Sphere(val center : Point3,val radius: Double) : Hittable(){
 
         if (discriminant > 0) {
             val root = sqrt(discriminant)
+
             var temp = (-half_b - root)/a
-            if (temp < t_max && temp > t_min) {
+            if (t_min < temp && temp < t_max) {
                 val outward_normal : Vector3 = (r.at(temp )-center) / radius
                 var rec = hit_record(
                     t = temp,
@@ -31,7 +32,7 @@ class Sphere(val center : Point3,val radius: Double) : Hittable(){
 
                 return rec
             }
-            temp = (-half_b - root)/a
+            temp = (-half_b + root)/a
             if (temp < t_max && temp > t_min) {
                 val outward_normal : Vector3 = (r.at(temp )-center) / radius
                 var rec = hit_record(
