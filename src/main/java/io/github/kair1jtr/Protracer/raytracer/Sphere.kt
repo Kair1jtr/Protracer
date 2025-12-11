@@ -5,7 +5,7 @@ import kotlin.math.sqrt
 import io.github.kair1jtr.Protracer.raytracer.*
 
 
-class Sphere(val center : Point3,val radius: Double,val mat_ptr: material) : Hittable(){
+class Sphere(val center : Point3,val radius: Double,val mat_ptr: Material) : Hittable(){
 
     override fun hit(r: Ray, t_min: Double, t_max: Double): hit_record {
         val oc = r.orig - center

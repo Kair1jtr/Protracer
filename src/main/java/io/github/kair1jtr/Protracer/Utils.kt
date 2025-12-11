@@ -18,7 +18,7 @@ object Utils {
         v1.x * v2.y - v2.x * v1.y
     )
 
-    fun unitVector(v: Vector3): Vector3 = v / v.length()
+    fun unit_vector(v: Vector3): Vector3 = v / v.length()
 
     fun degrees_to_radians(degrees: Double) : Double = degrees * pi / 180
 
@@ -54,5 +54,5 @@ object Utils {
         }
     }
 
-    fun reflect(v : Vector3,n : Vector3) : Vector3 = v-2* Utils.dot(v,n)*n
+    fun reflect(v : Vector3,n : Vector3) : Vector3 = v- (n*(2*Utils.dot(v,n)))
 }
