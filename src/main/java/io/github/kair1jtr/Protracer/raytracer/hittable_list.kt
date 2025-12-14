@@ -1,8 +1,6 @@
 package io.github.kair1jtr.Protracer.raytracer
 
-import io.github.kair1jtr.Protracer.Ray
-import io.github.kair1jtr.Protracer.*
-import io.github.kair1jtr.Protracer.Vector3
+import io.github.kair1jtr.Protracer.raytracer.Ray
 
 class hittable_list() : Hittable() {
     private var objects = mutableListOf<Hittable>()

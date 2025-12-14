@@ -1,6 +1,6 @@
 package io.github.kair1jtr.Protracer.raytracer
 
-import io.github.kair1jtr.Protracer.Ray
+import io.github.kair1jtr.Protracer.raytracer.Ray
 
 abstract class Hittable {
     abstract fun hit(

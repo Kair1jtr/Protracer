@@ -1,4 +1,4 @@
-package io.github.kair1jtr.Protracer
+package io.github.kair1jtr.Protracer.raytracer
 
 
 const val infinity = Double.POSITIVE_INFINITY

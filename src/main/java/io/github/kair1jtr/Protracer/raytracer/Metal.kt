@@ -1,10 +1,7 @@
 package io.github.kair1jtr.Protracer.raytracer
 
-import io.github.kair1jtr.Protracer.Color
-import io.github.kair1jtr.Protracer.Ray
-import io.github.kair1jtr.Protracer.Utils
-
-import io.github.kair1jtr.Protracer.*
+import io.github.kair1jtr.Protracer.raytracer.Ray
+import io.github.kair1jtr.Protracer.raytracer.Utils
 
 class Metal(val albedo: Color,val fuzz : Double) : Material() {
     override fun scatter(r_in: Ray, rec: hit_record): Triple<Color, Ray, Boolean> {

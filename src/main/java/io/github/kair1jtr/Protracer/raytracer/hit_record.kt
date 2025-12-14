@@ -1,9 +1,7 @@
 package io.github.kair1jtr.Protracer.raytracer
 
-import io.github.kair1jtr.Protracer.Point3
-import io.github.kair1jtr.Protracer.Ray
-import io.github.kair1jtr.Protracer.Utils
-import io.github.kair1jtr.Protracer.Vector3
+import io.github.kair1jtr.Protracer.raytracer.Ray
+import io.github.kair1jtr.Protracer.raytracer.Utils
 
 data class hit_record(
     var p: Point3,

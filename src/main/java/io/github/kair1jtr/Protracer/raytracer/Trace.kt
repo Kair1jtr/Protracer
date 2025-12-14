@@ -1,89 +1,83 @@
 package io.github.kair1jtr.Protracer.raytracer
 
-import io.github.kair1jtr.Protracer.Color
-import io.github.kair1jtr.Protracer.Point3
-import io.github.kair1jtr.Protracer.Ray
+import io.github.kair1jtr.Protracer.raytracer.Ray
 import io.github.kair1jtr.Protracer.Sphere
-import io.github.kair1jtr.Protracer.Utils
-import io.github.kair1jtr.Protracer.Vector3
-import io.github.kair1jtr.Protracer.infinity
-import io.github.kair1jtr.Protracer.pi
+import io.github.kair1jtr.Protracer.raytracer.Utils
 import processing.core.PApplet
 import processing.core.PConstants
 import processing.core.PImage
-import kotlin.math.cos
+import kotlin.system.measureTimeMillis
+import kotlinx.coroutines.*
 
-class Trace(var p: PApplet) {
-    fun drawImage(): PImage {
-        val image = p.createImage(p.width, p.height, PConstants.RGB)
+class Trace(var p: PApplet,val width : Int,val height: Int) {
+    public val world = hittable_list()
+
+    fun render(cam : Camera): PImage = runBlocking {
+        //world.clear()
+
+        val image = p.createImage(width, height, PConstants.RGB)
         image.loadPixels()
 
-        val samples_per_pixel : Int = 10
-        val max_depth = 5
+        val samples = 2
+        val maxDepth = 3
 
-        var world : hittable_list = hittable_list()
-        world.add(Sphere(
-            Point3(1.0,-100.5,-1.0),
-            100.0,
-            Lambertian(Color(0.8, 0.6, 0.2)))
-        )
-        world.add(Sphere(
-            Point3(-1.0,0.0,-1.0),
-            0.5,
-            Lambertian(Color(0.8, 0.8, 0.8)))
-        )
-        world.add(Sphere(
-            Point3(0.0,0.0,-1.0),
-            0.5,
-            Lambertian(Color(0.7, 0.3, 0.3)))
-        )
-        world.add(Sphere(
-            Point3(1.0,0.0,-1.0),
-            0.5,
-            Metal(Color(0.7, 0.3, 0.3),0.3))
-        )
+        /*val cam = Camera(
+            Point3(-2.0,2.0,1.0),
+            Point3(0.0,0.0,0.0),
+            Vector3(0.0,1.0,0.0),
+            pi/180 * 90,
+            width.toDouble() / height
+        )*/
 
+        val h = image.height
+        val w = image.width
 
-        var cam : Camera = Camera(Point3(-2.0,2.0,1.0), Point3(0.0,0.0,-1.0), Vector3(0.0,1.0,0.0),90.0,p.width.toDouble()/p.height)
+        val time = measureTimeMillis {
+            for (y in 0 until h) {
+                for (x in 0 until w) {
+                    var col = Color(0.0,0.0,0.0)
 
-        for (y in 0 until image.height) {
-            for (x in 0 until image.width) {
-                var pixel_color : Color = Color(0.0,0.0,0.0)
+                    repeat(samples) {
+                        val u = (x + Utils.random_double()) / (w - 1)
+                        val v = (y + Utils.random_double()) / (h - 1)
 
-                for (s in 0 until samples_per_pixel) {
-                    val u : Double = (x.toDouble() + Utils.random_double()) / (p.width-1).toDouble();
-                    val v : Double = (y.toDouble() + Utils.random_double()) / (p.height-1).toDouble();
+                        col += ray_color(cam.get_ray(u,v), world, maxDepth)
+                    }
 
-                    var r = cam.get_ray(u,v)
-                    pixel_color += ray_color(r,world,max_depth)
+                    val c = write_color(col, samples)
+
+                    val r = (c.x * 255).toInt().coerceIn(0,255)
+                    val g = (c.y * 255).toInt().coerceIn(0,255)
+                    val b = (c.z * 255).toInt().coerceIn(0,255)
+
+                    image.pixels[(image.height - 1 - y) * image.width + x] = 0xFF000000.toInt() or (r.toInt() shl 16) or (g.toInt() shl 8) or b.toInt()
                 }
-                val c = write_color(pixel_color,samples_per_pixel)
-
-                val red = (c.x * 255).toInt().coerceIn(0, 255)
-                val green = (c.y * 255).toInt().coerceIn(0, 255)
-                val blue = (c.z * 255).toInt().coerceIn(0, 255)
-
-                p.set(x,p.height-1-y,p.color(red,green,blue))
-                //image.pixels[y * image.width + x] = p.color(red, green, blue)
             }
         }
-        image.updatePixels()
 
-        return image
+        //println("Render time = $time ms")
+
+        image.updatePixels()
+        return@runBlocking image
+    }
+
+    fun add_obj(obj: Sphere) {
+        world.add(obj)
+    }
+
+    fun clear_obj() {
+        world.clear()
     }
 
     fun write_color(pixel_color : Color,samples_per_pixel : Int) : Color {
-        var r = pixel_color.x
-        var g = pixel_color.y
-        var b = pixel_color.z
-
         //色の和をサンプル数で割る
         val scale = 1.0 / samples_per_pixel
-        r *= scale
-        g *= scale
-        b *= scale
 
-        return Color(r,g,b)
+        return Color(
+            pixel_color.x * scale,
+            pixel_color.y * scale,
+            pixel_color.z * scale
+        )
     }
 
     fun ray_color(r : Ray, world: hittable_list,depth : Int) : Color {

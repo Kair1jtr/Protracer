@@ -1,4 +1,4 @@
-package io.github.kair1jtr.Protracer
+package io.github.kair1jtr.Protracer.raytracer
 
 class Ray(val orig: Vector3, val dir: Vector3) {
     fun at(t: Double): Vector3 = orig + dir * t;

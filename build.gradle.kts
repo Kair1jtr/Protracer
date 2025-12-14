@@ -96,9 +96,11 @@ dependencies {
     // For example uncomment the following line to declare commons-math3 as a dependency.
     // implementation(group = "org.apache.commons", name = "commons-math3", version = "3.6.1")
 
-    // https://mvnrepository.com/artifact/org.jocl/jocl
-    implementation("org.jocl:jocl:2.0.5")
     //implementation(group = "org.processing", name = "core", version = "4.3.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    // https://mvnrepository.com/artifact/org.jocl/jocl
+    implementation("org.jocl:jocl:2.0.6")
 
     // To add a dependency on a Processing library that is installed locally,
     // uncomment the line below, and replace <library folder> with the location of that library
@@ -278,3 +280,10 @@ tasks.register("deployToProcessingSketchbook") {
     }
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs("src/main/resources")
+        }
+    }
+}

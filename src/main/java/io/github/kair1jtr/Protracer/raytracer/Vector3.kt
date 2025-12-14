@@ -1,6 +1,4 @@
-package io.github.kair1jtr.Protracer
-
-import kotlin.time.measureTime
+package io.github.kair1jtr.Protracer.raytracer
 
 class Vector3(val x: Double, val y: Double, val z: Double) {
 
